@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>thought-logger</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <input type="text" id="inp" placeholder="Tell me stuff!" />
+
+    <script>
+      const fs = require('fs')
+      const remote = require('electron').remote
+      const { argv } = remote.process
+
+      // Thanks Steven Moseley, stackoverflow
+      function formatLocalDate() {
+        var now = new Date(),
+            tzo = -now.getTimezoneOffset(),
+            dif = tzo >= 0 ? '+' : '-',
+            pad = function(num) {
+              var norm = Math.abs(Math.floor(num))
+              return (norm < 10 ? '0' : '') + norm
+            };
+            pad3 = function(num) {
+              return (num < 100 ? (num < 10 ? '00' : '0')  : '') + num
+            }
+        return now.getFullYear()
+          + '-' + pad(now.getMonth()+1)
+          + '-' + pad(now.getDate())
+          + ' ' + pad(now.getHours())
+          + ':' + pad(now.getMinutes())
+          + ':' + pad(now.getSeconds())
+          + '.' + pad3(now.getMilliseconds())
+          + dif + pad(tzo / 60)
+          + ':' + pad(tzo % 60)
+      }
+
+      function log (msg) {
+        const timestamp = formatLocalDate()
+        const logfile = argv.pop()
+        try {
+          fs.appendFileSync(logfile, `${timestamp} ${msg}\n`)
+        } catch (e) {
+          alert (e)
+        }
+      }
+
+      function exit () {
+        remote.getCurrentWindow().close()
+      }
+
+      function focus () {
+        document.getElementById('inp').focus()
+      }
+
+      window.onload = window.onclick = window.onfocus = focus
+      window.onkeydown = e => { if (e.keyCode === 27) exit() }
+
+      const inp = document.getElementById('inp')
+      inp.onkeyup = function (e) { if (e.keyCode === 13) inp.submit() }
+      inp.submit = function (e) {
+        const msg = inp.value
+        if (msg.length) log(msg)
+        exit()
+      }
+    </script>
+  </body>
+</html>

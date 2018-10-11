@@ -1,0 +1,20 @@
+{
+  "name": "thought-logger",
+  "version": "1.0.0",
+  "description": "Log thoughts without losing focus",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "productivity",
+    "logging",
+    "GTD",
+    "electron"
+  ],
+  "author": "Karl Svartholm <gorbiz@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^3.0.4"
+  }
+}
